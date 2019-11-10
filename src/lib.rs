@@ -143,7 +143,7 @@ pub fn rv(attr: TokenStream, item: TokenStream) -> TokenStream {
                     quote! {
                         unsafe fn #handler(output: *mut libc::c_char, size: usize, args: Option<*mut *mut i8>, count: Option<usize>) {
                             let argv: &[*mut libc::c_char; #argcount] = std::mem::transmute(args.unwrap());
-                            let mut argv: Vec<String> = argv.to_vec().into_iter().map(|s| std::ffi::CStr::from_ptr(s).to_str().unwrap().replace("\"", "")).collect();
+                            let mut argv: Vec<String> = argv.to_vec().into_iter().map(|s| std::ffi::CStr::from_ptr(s).to_str().unwrap().trim_matches("\"", "").replace("\"\"", "\"")).collect();
                             argv.reverse();
                             std::thread::spawn(move || {
                                 #name(#(#argtypes::from_str(&argv.pop().unwrap()).unwrap(),)*);
@@ -154,7 +154,7 @@ pub fn rv(attr: TokenStream, item: TokenStream) -> TokenStream {
                     quote! {
                         unsafe fn #handler(output: *mut libc::c_char, size: usize, args: Option<*mut *mut i8>, count: Option<usize>) {
                             let argv: &[*mut libc::c_char; #argcount] = std::mem::transmute(args.unwrap());
-                            let mut argv: Vec<String> = argv.to_vec().into_iter().map(|s| std::ffi::CStr::from_ptr(s).to_str().unwrap().replace("\"", "")).collect();
+                            let mut argv: Vec<String> = argv.to_vec().into_iter().map(|s| std::ffi::CStr::from_ptr(s).to_str().unwrap().trim_matches("\"", "").replace("\"\"", "\"")).collect();
                             argv.reverse();
                             #name(#(#argtypes::from_str(&argv.pop().unwrap()).unwrap(),)*);
                         }
@@ -168,7 +168,7 @@ pub fn rv(attr: TokenStream, item: TokenStream) -> TokenStream {
                 quote! {
                     unsafe fn #handler(output: *mut libc::c_char, size: usize, args: Option<*mut *mut i8>, count: Option<usize>) {
                         let argv: &[*mut libc::c_char; #argcount] = std::mem::transmute(args.unwrap());
-                        let mut argv: Vec<String> = argv.to_vec().into_iter().map(|s| std::ffi::CStr::from_ptr(s).to_str().unwrap().replace("\"", "")).collect();
+                        let mut argv: Vec<String> = argv.to_vec().into_iter().map(|s| std::ffi::CStr::from_ptr(s).to_str().unwrap().trim_matches("\"", "").replace("\"\"", "\"")).collect();
                         argv.reverse();
                         let v = #name(#(#argtypes::from_str(&argv.pop().unwrap()).unwrap(),)*).to_string();
                         libc::strncpy(output, std::ffi::CString::new(v).unwrap().into_raw(), size);
