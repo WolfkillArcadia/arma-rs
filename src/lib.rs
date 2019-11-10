@@ -241,7 +241,7 @@ pub fn rv_handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
         extern crate libc;
         #[no_mangle]
-        pub unsafe extern "stdcall" fn RvExtensionVersion(output: *mut libc::c_char, output_size: usize) {
+        pub unsafe extern "C" fn RvExtensionVersion(output: *mut libc::c_char, output_size: usize) {
             if !did_init {
                 init();
                 did_init = true;
@@ -251,7 +251,7 @@ pub fn rv_handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
         }
 
         #[no_mangle]
-        pub unsafe extern "stdcall" fn RVExtension(output: *mut libc::c_char, output_size: usize, function: *mut libc::c_char) {
+        pub unsafe extern "C" fn RVExtension(output: *mut libc::c_char, output_size: usize, function: *mut libc::c_char) {
             if !did_init {
                 init();
                 did_init = true;
@@ -270,7 +270,7 @@ pub fn rv_handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
         }
 
         #[no_mangle]
-        pub unsafe extern "stdcall" fn RVExtensionArgs(output: *mut libc::c_char, output_size: usize, function: *mut libc::c_char, args: *mut *mut libc::c_char, arg_count: usize) {
+        pub unsafe extern "C" fn RVExtensionArgs(output: *mut libc::c_char, output_size: usize, function: *mut libc::c_char, args: *mut *mut libc::c_char, arg_count: usize) {
             if !did_init {
                 init();
                 did_init = true;
