@@ -113,3 +113,20 @@ impl ToArma for f64 {
         ArmaValue::Number(self.to_owned() as f32)
     }
 }
+
+impl ToArma for bool {
+    fn to_arma(&self) -> ArmaValue {
+        ArmaValue::Boolean(self.to_owned())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_it_converts_bool() {
+        assert_eq!(format!("{}", ArmaValue::Boolean(true)), "true");
+        assert_eq!(format!("{}", ArmaValue::Boolean(false)), "false");
+    }
+}
