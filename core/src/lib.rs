@@ -55,6 +55,37 @@ macro_rules! quote {
     };
 }
 
+#[macro_export]
+macro_rules! arma_value {
+    // JSON syntax
+    ({ $($key:tt: $value:expr),* }) => {{
+        $crate::ArmaValue::HashMap(
+            vec![
+                $( ($key.to_arma(), $value.to_arma()) ),*
+            ]
+        )
+    }};
+
+    // Array
+    ([ $($val:expr),* ]) => {
+        vec![$($val.to_arma()),*].to_arma()
+    };
+
+    // String, number, boolean
+    ($val:literal) => {
+        $val.to_arma()
+    };
+
+    // Nil
+    (nil) => {
+        $crate::ArmaValue::Nil
+    };
+
+    (null) => {
+        $crate::ArmaValue::Nil
+    };
+}
+
 // commy said no but the dream lives on
 //
 // #[macro_export]

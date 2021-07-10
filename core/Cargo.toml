@@ -7,3 +7,7 @@ edition = "2018"
 [dependencies]
 arma-rs-codegen = {path = "../codegen"}
 libc = "0.2"
+chrono = { version = "0.4", optional = true }
+
+[features]
+chrono_datetime = ["chrono"]
