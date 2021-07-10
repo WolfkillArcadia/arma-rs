@@ -8,6 +8,4 @@ edition = "2018"
 arma-rs-codegen = {path = "../codegen"}
 libc = "0.2"
 chrono = { version = "0.4", optional = true }
-
-[features]
-chrono_datetime = ["chrono"]
+uuid = { version = "0.8", optional = true, features = ["v4"] }

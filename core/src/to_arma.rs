@@ -152,10 +152,17 @@ impl<K: ToArma, V: ToArma> ToArma for HashMap<K, V> {
     }
 }
 
-#[cfg(feature = "chrono_datetime")]
+#[cfg(feature = "chrono")]
 impl ToArma for chrono::DateTime<chrono::Utc> {
     fn to_arma(&self) -> ArmaValue {
         self.to_rfc3339().to_arma()
+    }
+}
+
+#[cfg(feature = "uuid")]
+impl ToArma for uuid::Uuid {
+    fn to_arma(&self) -> ArmaValue {
+        self.to_string().to_arma()
     }
 }
 
