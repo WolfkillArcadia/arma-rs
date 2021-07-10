@@ -1,9 +1,11 @@
 [package]
 name = "arma-rs"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Brett <brett@mayson.io>"]
 edition = "2018"
 
 [dependencies]
 arma-rs-codegen = {path = "../codegen"}
 libc = "0.2"
+chrono = { version = "0.4", optional = true }
+uuid = { version = "0.8", optional = true, features = ["v4"] }
