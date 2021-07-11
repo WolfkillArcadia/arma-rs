@@ -61,9 +61,22 @@ impl ToArma for String {
         ArmaValue::String(self.to_string())
     }
 }
+
 impl ToArma for &'static str {
     fn to_arma(&self) -> ArmaValue {
         ArmaValue::String(self.to_string())
+    }
+}
+
+impl ToArma for usize {
+    fn to_arma(&self) -> ArmaValue {
+        ArmaValue::Number(self.to_owned() as f32)
+    }
+}
+
+impl ToArma for isize {
+    fn to_arma(&self) -> ArmaValue {
+        ArmaValue::Number(self.to_owned() as f32)
     }
 }
 
@@ -149,6 +162,15 @@ impl<K: ToArma, V: ToArma> ToArma for HashMap<K, V> {
                 .map(|(k, v)| (k.to_arma(), v.to_arma()))
                 .collect::<Vec<(ArmaValue, ArmaValue)>>(),
         )
+    }
+}
+
+impl<T: ToArma> ToArma for Option<T> {
+    fn to_arma(&self) -> ArmaValue {
+        match self {
+            Some(v) => v.to_arma(),
+            None => ArmaValue::Nil
+        }
     }
 }
 

@@ -57,7 +57,25 @@ macro_rules! quote {
 
 #[macro_export]
 macro_rules! arma_value {
-    // JSON syntax
+    // Nil
+    (nil) => {
+        $crate::ArmaValue::Nil
+    };
+
+    (null) => {
+        $crate::ArmaValue::Nil
+    };
+
+    // Empty Array and HashMap
+    ([]) => {
+        $crate::ArmaValue::Array(Vec::new())
+    };
+
+    ({}) => {
+        $crate::ArmaValue::HashMap(Vec::new())
+    };
+
+    // Hashmap (Ruby Hash syntax)
     ({ $($key:tt: $value:expr),* }) => {{
         $crate::ArmaValue::HashMap(
             vec![
@@ -76,13 +94,8 @@ macro_rules! arma_value {
         $val.to_arma()
     };
 
-    // Nil
-    (nil) => {
-        $crate::ArmaValue::Nil
-    };
-
-    (null) => {
-        $crate::ArmaValue::Nil
+    ($val:expr) => {
+        $val.to_arma()
     };
 }
 
