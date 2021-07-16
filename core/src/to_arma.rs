@@ -14,7 +14,7 @@ impl std::fmt::Display for ArmaValue {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Nil => write!(f, "nil"),
-            Self::Number(n) => write!(f, "{}", n.to_string()),
+            Self::Number(n) => write!(f, "{}", n),
             Self::Array(a) => write!(
                 f,
                 "[{}]",
@@ -23,10 +23,9 @@ impl std::fmt::Display for ArmaValue {
                     .collect::<Vec<String>>()
                     .join(", ")
             ),
-            Self::Boolean(b) => write!(f, "{}", b.to_string()),
-
-            // Because Arma strings are quoted twice in a string
-            Self::String(s) => write!(f, "\"\"{}\"\"", s.to_string().replace("\"", "\"\"")),
+            Self::Boolean(b) => write!(f, "{}", b),
+            // parseSimpleArray supports single quotes. This is way easier to deal with than double quotes. Seriously.
+            Self::String(s) => write!(f, "\"{}\"", s.replace("\"", "'")),
             Self::HashMap(h) => write!(
                 f,
                 "[{}]",
@@ -58,7 +57,7 @@ impl<T: ToArma> ToArma for Vec<T> {
 
 impl ToArma for String {
     fn to_arma(&self) -> ArmaValue {
-        ArmaValue::String(self.to_string())
+        ArmaValue::String(self.to_owned())
     }
 }
 
@@ -212,7 +211,7 @@ mod tests {
 
         assert_eq!(
             format!("{}", ArmaValue::HashMap(vec)),
-            r#"[[""key"", ""value""], [""key2"", true]]"#
+            r#"[['key', 'value'], ['key2', true]]"#
         );
     }
 
@@ -230,7 +229,7 @@ mod tests {
 
         assert_eq!(
             result.to_string(),
-            r#"[[""string"", ""world""], [""int"", 55], [""bool"", false], [""array"", [1, 2, 3]], [""hash"", [[""true"", true], [""false"", false]]]]"#
+            r#"[['string', 'world'], ['int', 55], ['bool', false], ['array', [1, 2, 3]], ['hash', [['true', true], ['false', false]]]]"#
         );
 
         // Array
@@ -244,12 +243,12 @@ mod tests {
 
         assert_eq!(
             result.to_string(),
-            r#"[""string"", 55, false, [1, 2, 3], [[""true"", true], [""false"", false]]]"#
+            r#"['string', 55, false, [1, 2, 3], [['true', true], ['false', false]]]"#
         );
 
         // String
         let result = arma_value!("test");
-        assert_eq!(result.to_string(), "\"\"test\"\"");
+        assert_eq!(result.to_string(), "'test'");
 
         // Number
         let result = arma_value!(55);
