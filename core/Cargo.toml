@@ -9,3 +9,4 @@ arma-rs-codegen = {path = "../codegen"}
 libc = "0.2"
 chrono = { version = "0.4", optional = true }
 uuid = { version = "0.8", optional = true, features = ["v4"] }
+log = "*"

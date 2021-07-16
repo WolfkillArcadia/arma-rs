@@ -143,7 +143,6 @@ pub fn rv(attr: TokenStream, item: TokenStream) -> TokenStream {
 
                 quote! {
                     unsafe fn #handler(output: *mut arma_rs_libc::c_char, size: usize, _: Option<*mut *mut i8>, _: Option<usize>) {
-                        // This is why the code must return a type that supports ToString
                         write_str_to_ptr(#name().to_string(), output, size);
                     }
                 }
@@ -214,7 +213,8 @@ pub fn rv(attr: TokenStream, item: TokenStream) -> TokenStream {
                             ),*
                         );
 
-                        // This is why the code must return a type that supports ToString
+                        log::debug!("R: {:?}", call_results.to_string());
+
                         write_str_to_ptr(call_results.to_string(), output, size);
                     }
                 }
@@ -302,8 +302,8 @@ pub fn rv_handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
             if !did_init { #init(); did_init = true; }
 
             // Tracing here because this is the first function called and trace! needs to be in a fn
-            trace!("Proxies: {:?}", endpoint_proxies);
-            trace!("ProxiesArgs: {:?}", endpoint_proxies_arg);
+            log::trace!("Proxies: {:?}", endpoint_proxies);
+            log::trace!("ProxiesArgs: {:?}", endpoint_proxies_arg);
 
             write_str_to_ptr(env!("CARGO_PKG_VERSION").to_string(), output, size);
         }
@@ -327,7 +327,7 @@ pub fn rv_handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 return;
             }
 
-            error!("[rv_handler] Failed to find endpoint \"{}\"", rust_function_name);
+            log::error!("[rv_handler] Failed to find endpoint \"{}\"", rust_function_name);
         }
 
         #[allow(non_snake_case)]
@@ -350,7 +350,7 @@ pub fn rv_handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 return;
             }
 
-            error!("[rv_handler] Failed to find endpoint \"{}\"", rust_function_name);
+            log::error!("[rv_handler] Failed to find endpoint \"{}\"", rust_function_name);
         }
 
         #[allow(non_snake_case)]
@@ -401,7 +401,9 @@ pub fn rv_handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
             // We provide a guarantee to our unsafe code, that we'll never pass anything too large.
             // In reality, I can't see this ever happening.
-            if amount_to_copy > isize::MAX as usize {return None}
+            if amount_to_copy > isize::MAX as usize { return None }
+
+            log::trace!("[rv_handler] Writing {:?} with size {}", cstr, amount_to_copy);
 
             // We'll never copy the whole string here - it will always be missing the null byte.
             ptr.copy_from(cstr.as_ptr(), amount_to_copy);

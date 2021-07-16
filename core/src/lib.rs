@@ -23,7 +23,12 @@ macro_rules! rv_callback {
     ($n:expr, $f:expr, $d:expr) => {{
         let name = std::ffi::CString::new($n).unwrap().into_raw();
         let func = std::ffi::CString::new($f).unwrap().into_raw();
-        let data = std::ffi::CString::new(arma_rs::to_arma($d).to_string().trim_start_matches("\"").trim_end_matches("\"").to_string()).unwrap().into_raw();
+        let data = std::ffi::CString::new(
+            arma_rs::to_arma($d).to_string()
+                                .trim_start_matches("\"")
+                                .trim_end_matches("\"")
+                                .to_string()
+            ).unwrap().into_raw();
         unsafe {
             rv_send_callback(name, func, data);
         }
@@ -75,7 +80,7 @@ macro_rules! arma_value {
         $crate::ArmaValue::HashMap(Vec::new())
     };
 
-    // Hashmap (Ruby Hash syntax)
+    // Hashmap (JSON Syntax)
     ({ $($key:tt: $value:expr),* }) => {{
         $crate::ArmaValue::HashMap(
             vec![
